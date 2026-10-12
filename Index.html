@@ -1,0 +1,484 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Security Risk Check</title>
+  <style>
+    :root {
+      --purple: #6d28d9;
+      --ink: #211b2b;
+      --muted: #655e70;
+      --line: #e5deee;
+      --surface: #ffffff;
+      --page: #f7f5fb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--page);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    header {
+      background: #291047;
+      color: white;
+      padding: 36px 20px;
+    }
+
+    header div, main {
+      max-width: 850px;
+      margin: auto;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+    }
+
+    header p { margin: 0; color: #eee3ff; }
+
+    main { padding: 24px 16px 48px; }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    h2 { margin-top: 0; font-size: 21px; }
+
+    .intro, .hint, .note {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .field { margin: 20px 0; }
+
+    label, .question-title {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    input, select, textarea {
+      display: block;
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #cfc5dc;
+      border-radius: 8px;
+      background: white;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    textarea { min-height: 80px; resize: vertical; }
+
+    .question {
+      border-top: 1px solid var(--line);
+      padding: 17px 0;
+    }
+
+    .question:first-of-type { border-top: 0; }
+
+    .question p { margin: 4px 0 10px; }
+
+    button {
+      background: var(--purple);
+      color: white;
+      border: 0;
+      border-radius: 9px;
+      padding: 13px 18px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover { background: #5520b3; }
+
+    .secondary {
+      background: white;
+      color: var(--purple);
+      border: 1px solid var(--purple);
+      margin-left: 8px;
+    }
+
+    #results { display: none; }
+
+    .score-panel {
+      background: #f1eaff;
+      border-radius: 12px;
+      padding: 18px;
+      margin: 16px 0;
+    }
+
+    .score {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .finding {
+      border-left: 4px solid var(--purple);
+      background: #faf8fd;
+      padding: 12px 14px;
+      margin: 12px 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .finding h3 { margin: 0 0 5px; font-size: 16px; }
+
+    .warning {
+      background: #fff7e8;
+      border: 1px solid #f1d7a6;
+      padding: 14px;
+      border-radius: 9px;
+      margin-top: 16px;
+    }
+
+    .actions { margin-top: 18px; }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 500px) {
+      header h1 { font-size: 25px; }
+      section { padding: 16px; }
+      .secondary { margin: 8px 0 0; }
+    }
+
+    @media print {
+      body { background: white; }
+      header { background: white; color: black; padding: 10px 0; }
+      header p { color: black; }
+      main { padding: 0; }
+      #assessment, .actions, footer { display: none !important; }
+      #results { display: block !important; }
+      section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>AI Security Risk Check</h1>
+      <p>A practical first check for businesses using AI.</p>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h2>Before you begin</h2>
+      <p class="intro">
+        Answer using what you know today. Mark controls as unverified when
+        you cannot confirm them. This tool helps identify questions to
+        investigate; it does not certify that an AI system is safe.
+      </p>
+      <p class="note">
+        Demo version: your answers are processed in this browser and are
+        not sent to a server by this page. Avoid entering real customer
+        names, confidential information, or sensitive business details.
+      </p>
+    </section>
+
+    <form id="assessment">
+      <section>
+        <h2>1. About the AI use case</h2>
+
+        <div class="field">
+          <label for="purpose">What is the main business purpose?</label>
+          <input id="purpose" placeholder="Example: customer support" required>
+        </div>
+
+        <div class="field">
+          <label for="owner">Who is responsible for the AI workflow?</label>
+          <input id="owner" placeholder="Example: operations manager" required>
+        </div>
+
+        <div class="field">
+          <label for="data">What type of information does it process?</label>
+          <textarea id="data" placeholder="Example: customer questions and order details" required></textarea>
+        </div>
+
+        <div class="field">
+          <label for="sensitive">Does it process personal, confidential, financial, health, or proprietary information?</label>
+          <select id="sensitive">
+            <option value="unknown">Not sure</option>
+            <option value="yes">Yes</option>
+            <option value="no">No, based on what we know</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="integrations">Can it access files, databases, email, tools, or external services?</label>
+          <select id="integrations">
+            <option value="unknown">Not sure</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="thirdparty">Does it depend on a third-party model, API, plugin, or dataset?</label>
+          <select id="thirdparty">
+            <option value="unknown">Not sure</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+      </section>
+
+      <section>
+        <h2>2. Check the security controls</h2>
+        <p class="intro">
+          Select the answer that best reflects the current evidence, not
+          what you hope is in place.
+        </p>
+        <div id="questions"></div>
+      </section>
+
+      <section>
+        <h2>3. Review and calculate</h2>
+        <p class="intro">
+          Check your answers before generating the result. The score covers
+          six control areas, with each area scored from 0 to 2.
+        </p>
+        <button type="submit">Generate risk summary</button>
+      </section>
+    </form>
+
+    <section id="results" aria-live="polite">
+      <h2>Your preliminary assessment</h2>
+      <div id="summary"></div>
+      <div id="findings"></div>
+      <div class="warning">
+        <strong>Important limitation</strong>
+        <p>
+          This result is a prioritisation aid based on the answers provided.
+          It is not a validated security rating, legal opinion, compliance
+          decision, or guarantee of safety. A qualified reviewer should
+          verify important findings before decisions are made.
+        </p>
+      </div>
+      <div class="actions">
+        <button type="button" onclick="window.print()">Print or save as PDF</button>
+        <button type="button" class="secondary" onclick="resetAssessment()">Start again</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>AI Security Risk Check · Early prototype · Version 0.1</footer>
+
+  <script>
+    const controls = [
+      {
+        id: "ownership",
+        title: "1. Ownership and accountability",
+        question: "Is there a named owner who is responsible for this AI system and its risks?",
+        action: "Confirm the accountable owner, their responsibilities, and who must be contacted when something goes wrong."
+      },
+      {
+        id: "datahandling",
+        title: "2. Data protection",
+        question: "Have data handling rules been checked, including what information is sent to the AI provider and how it is retained?",
+        action: "Map the information being processed. Verify provider retention and data-use terms, and establish appropriate data protection measures."
+      },
+      {
+        id: "access",
+        title: "3. Access and integrations",
+        question: "Are user permissions and connected tools restricted to the access each user and workflow actually needs?",
+        action: "Review users, permissions, connected services, and credentials. Apply least privilege and remove unnecessary access."
+      },
+      {
+        id: "oversight",
+        title: "4. Human oversight and impact",
+        question: "Are important outputs reviewed by a person, and have the consequences of wrong or manipulated outputs been assessed?",
+        action: "Define which outputs need human approval, who reviews them, when to escalate, and what harm could result from errors or manipulation."
+      },
+      {
+        id: "thirdpartycontrol",
+        title: "5. Third-party dependencies",
+        question: "Have the AI provider, model, plugin, or dataset been reviewed for relevant security, privacy, reliability, and dependency risks?",
+        action: "Document the provider and model. Review relevant security and privacy terms, known limitations, update practices, and fallback options."
+      },
+      {
+        id: "monitoring",
+        title: "6. Monitoring and response",
+        question: "Is there a way to detect misuse or unexpected behaviour and respond to an incident?",
+        action: "Define what should be logged, who checks for unusual activity, how incidents are reported, and how access can be stopped if needed."
+      }
+    ];
+
+    const answers = [
+      { value: "established", label: "Established and supported by evidence", score: 0 },
+      { value: "partial", label: "Partially addressed", score: 1 },
+      { value: "absent", label: "Absent or ineffective", score: 2 },
+      { value: "unverified", label: "Unverified / I don't know", score: 1 }
+    ];
+
+    const questionContainer = document.getElementById("questions");
+
+    controls.forEach(control => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "question";
+
+      const label = document.createElement("label");
+      label.className = "question-title";
+      label.htmlFor = control.id;
+      label.textContent = control.title;
+
+      const prompt = document.createElement("p");
+      prompt.textContent = control.question;
+
+      const select = document.createElement("select");
+      select.id = control.id;
+      select.required = true;
+
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "Choose an answer";
+      placeholder.selected = true;
+      placeholder.disabled = true;
+      select.appendChild(placeholder);
+
+      answers.forEach(answer => {
+        const option = document.createElement("option");
+        option.value = answer.value;
+        option.textContent = answer.label;
+        select.appendChild(option);
+      });
+
+      wrapper.append(label, prompt, select);
+      questionContainer.appendChild(wrapper);
+    });
+
+    document.getElementById("assessment").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      let total = 0;
+      let unverifiedCount = 0;
+      let absentCount = 0;
+      const results = [];
+
+      controls.forEach(control => {
+        const selected = document.getElementById(control.id).value;
+        const answer = answers.find(item => item.value === selected);
+
+        total += answer.score;
+
+        if (selected === "unverified") unverifiedCount++;
+        if (selected === "absent") absentCount++;
+
+        results.push({
+          title: control.title,
+          status: answer.label,
+          value: selected,
+          action: control.action
+        });
+      });
+
+      let band;
+      if (total <= 3) {
+        band = "Lower number of reported control gaps";
+      } else if (total <= 7) {
+        band = "Several control gaps or uncertainties";
+      } else {
+        band = "High initial concern: prioritise review";
+      }
+
+      document.getElementById("summary").innerHTML = `
+        <div class="score-panel">
+          <div class="score">${total} / 12</div>
+          <strong>${band}</strong>
+          <p>Reported absent controls: ${absentCount}. Unverified controls: ${unverifiedCount}.</p>
+          <p class="note">These bands are provisional and have not been validated against real-world cases.</p>
+        </div>
+        <p><strong>Business purpose:</strong> ${escapeText(document.getElementById("purpose").value)}</p>
+        <p><strong>Responsible owner:</strong> ${escapeText(document.getElementById("owner").value)}</p>
+        <p><strong>Information processed:</strong> ${escapeText(document.getElementById("data").value)}</p>
+        <p><strong>Sensitive information:</strong> ${contextLabel("sensitive")}</p>
+        <p><strong>External integrations:</strong> ${contextLabel("integrations")}</p>
+        <p><strong>Third-party dependency:</strong> ${contextLabel("thirdparty")}</p>
+      `;
+
+      const findings = document.getElementById("findings");
+      findings.replaceChildren();
+
+      const heading = document.createElement("h3");
+      heading.textContent = "Control findings and suggested actions";
+      findings.appendChild(heading);
+
+      results.forEach(result => {
+        const card = document.createElement("div");
+        card.className = "finding";
+
+        const title = document.createElement("h3");
+        title.textContent = result.title;
+
+        const status = document.createElement("p");
+        status.textContent = "Status: " + result.status;
+
+        const action = document.createElement("p");
+        action.textContent = "Suggested next step: " + result.action;
+
+        card.append(title, status, action);
+        findings.appendChild(card);
+      });
+
+      const contextWarnings = [];
+      if (document.getElementById("sensitive").value !== "no") {
+        contextWarnings.push("Verify data protection requirements because sensitive information may be involved.");
+      }
+      if (document.getElementById("integrations").value !== "no") {
+        contextWarnings.push("Review permissions and the potential impact of connected tools or services.");
+      }
+      if (document.getElementById("thirdparty").value !== "no") {
+        contextWarnings.push("Check third-party provider and dependency risks.");
+      }
+
+      if (contextWarnings.length) {
+        const contextHeading = document.createElement("h3");
+        contextHeading.textContent = "Contextual risk flags";
+        findings.appendChild(contextHeading);
+
+        contextWarnings.forEach(text => {
+          const item = document.createElement("div");
+          item.className = "finding";
+          item.textContent = text;
+          findings.appendChild(item);
+        });
+      }
+
+      document.getElementById("results").style.display = "block";
+      document.getElementById("results").scrollIntoView({ behavior: "smooth" });
+    });
+
+    function contextLabel(id) {
+      const select = document.getElementById(id);
+      return select.options[select.selectedIndex].text;
+    }
+
+    function escapeText(value) {
+      const element = document.createElement("span");
+      element.textContent = value;
+      return element.innerHTML;
+    }
+
+    function resetAssessment() {
+      document.getElementById("assessment").reset();
+      document.getElementById("results").style.display = "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  </script>
+</body>
+</html>
