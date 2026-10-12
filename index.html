@@ -1,343 +1,1007 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#45062E">
   <title>AI Security Risk Check</title>
   <style>
     :root {
-      --purple: #6d28d9;
-      --ink: #211b2b;
-      --muted: #655e70;
-      --line: #e5deee;
-      --surface: #ffffff;
-      --page: #f7f5fb;
+      --crimson: #45062E;
+      --plum: #7F055F;
+      --blush: #E5A4CB;
+      --powder: #EBD2BE;
+      --cream: #FFE8D4;
+      --paper: #FFFCF9;
+      --ink: #291D27;
+      --muted: #71636D;
+      --line: #E7DCE3;
+      --green: #176B45;
+      --green-bg: #EAF6EF;
+      --amber: #8A5700;
+      --amber-bg: #FFF3D7;
+      --red: #A32635;
+      --red-bg: #FCEBED;
+      --shadow: 0 10px 32px rgba(69, 6, 46, .06);
     }
 
     * { box-sizing: border-box; }
 
+    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: var(--page);
       color: var(--ink);
-      line-height: 1.6;
+      background: var(--paper);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      font-size: 15px;
+      line-height: 1.65;
     }
 
-    header {
-      background: #291047;
+    button, input, select, textarea { font: inherit; }
+
+    button, select { cursor: pointer; }
+
+    a { color: var(--plum); }
+
+    .topbar {
+      background: var(--crimson);
       color: white;
-      padding: 36px 20px;
+      border-bottom: 4px solid var(--blush);
     }
 
-    header div, main {
-      max-width: 850px;
+    .topbar-inner {
+      max-width: 1120px;
       margin: auto;
+      padding: 16px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
     }
 
-    header h1 {
-      margin: 0 0 8px;
-      font-size: 30px;
+    .brand {
+      font-size: 13px;
+      font-weight: 750;
+      letter-spacing: .13em;
+      text-transform: uppercase;
     }
 
-    header p { margin: 0; color: #eee3ff; }
+    .edition {
+      color: var(--cream);
+      font-size: 12px;
+      letter-spacing: .04em;
+    }
 
-    main { padding: 24px 16px 48px; }
+    .hero {
+      background: var(--cream);
+      border-bottom: 1px solid var(--powder);
+    }
 
-    section {
-      background: var(--surface);
+    .hero-inner {
+      max-width: 1120px;
+      margin: auto;
+      padding: 52px 28px 46px;
+    }
+
+    .eyebrow {
+      color: var(--plum);
+      text-transform: uppercase;
+      font-weight: 750;
+      letter-spacing: .12em;
+      font-size: 11px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      color: var(--crimson);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(34px, 5vw, 54px);
+      letter-spacing: -.035em;
+      line-height: 1.12;
+      max-width: 700px;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .hero-copy {
+      max-width: 630px;
+      color: #5B4553;
+      margin: 18px 0 0;
+      font-size: 16px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+      margin-top: 25px;
+      color: #5B4553;
+      font-size: 12px;
+    }
+
+    .hero-meta span::before {
+      content: "•";
+      color: var(--plum);
+      margin-right: 8px;
+      font-weight: 900;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 34px 28px 70px;
+    }
+
+    .notice {
+      border: 1px solid var(--powder);
+      border-left: 4px solid var(--plum);
+      background: #FFF8F1;
+      padding: 15px 18px;
+      border-radius: 5px;
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: #5F4B58;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 285px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .section-card, .side-card {
+      background: white;
       border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 22px;
-      margin-bottom: 18px;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
     }
 
-    h2 { margin-top: 0; font-size: 21px; }
+    .section-card {
+      padding: 27px;
+      margin-bottom: 22px;
+    }
 
-    .intro, .hint, .note {
+    .section-heading {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 22px;
+    }
+
+    .section-number {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      border-radius: 50%;
+      color: white;
+      background: var(--crimson);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--crimson);
+      font-size: 20px;
+      line-height: 1.35;
+    }
+
+    .section-description {
       color: var(--muted);
-      font-size: 14px;
+      margin: 5px 0 0;
+      font-size: 13px;
     }
 
     .field { margin: 20px 0; }
 
+    .field:last-child { margin-bottom: 0; }
+
     label, .question-title {
       display: block;
       font-weight: 700;
+      color: var(--crimson);
       margin-bottom: 7px;
+      font-size: 13px;
+    }
+
+    .field-hint {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 5px;
     }
 
     input, select, textarea {
-      display: block;
       width: 100%;
-      padding: 11px;
-      border: 1px solid #cfc5dc;
-      border-radius: 8px;
-      background: white;
       color: var(--ink);
-      font: inherit;
-    }
-
-    textarea { min-height: 80px; resize: vertical; }
-
-    .question {
-      border-top: 1px solid var(--line);
-      padding: 17px 0;
-    }
-
-    .question:first-of-type { border-top: 0; }
-
-    .question p { margin: 4px 0 10px; }
-
-    button {
-      background: var(--purple);
-      color: white;
-      border: 0;
-      border-radius: 9px;
-      padding: 13px 18px;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    button:hover { background: #5520b3; }
-
-    .secondary {
       background: white;
-      color: var(--purple);
-      border: 1px solid var(--purple);
-      margin-left: 8px;
+      border: 1px solid #D8C8D2;
+      border-radius: 6px;
+      padding: 12px 13px;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--plum);
+      box-shadow: 0 0 0 3px rgba(127, 5, 95, .10);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 85px;
+    }
+
+    .control {
+      border-top: 1px solid var(--line);
+      padding: 22px 0;
+    }
+
+    .control:first-child { border-top: 0; padding-top: 0; }
+
+    .control:last-child { padding-bottom: 0; }
+
+    .control-index {
+      color: var(--plum);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .control-question {
+      color: var(--ink);
+      font-weight: 650;
+      margin: 0 0 8px;
+      line-height: 1.5;
+    }
+
+    .control-explainer {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0 0 13px;
+    }
+
+    .side-card {
+      padding: 22px;
+      position: sticky;
+      top: 20px;
+      box-shadow: none;
+    }
+
+    .side-card h3 {
+      color: var(--crimson);
+      font-size: 15px;
+      margin: 0 0 14px;
+    }
+
+    .progress-track {
+      height: 5px;
+      background: #F0E7ED;
+      overflow: hidden;
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: var(--plum);
+      transition: width .2s ease;
+    }
+
+    .progress-text {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 12px;
+      margin: 12px 0;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex: 0 0 9px;
+    }
+
+    .dot-green { background: var(--green); }
+    .dot-amber { background: #D99A19; }
+    .dot-red { background: var(--red); }
+
+    .side-divider {
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 20px 0;
+    }
+
+    .side-note {
+      color: var(--muted);
+      font-size: 12px;
+      margin: 0;
+    }
+
+    .primary-button, .secondary-button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      border-radius: 6px;
+      padding: 12px 18px;
+      font-weight: 750;
+      font-size: 13px;
+      border: 1px solid transparent;
+      text-decoration: none;
+    }
+
+    .primary-button {
+      color: white;
+      background: var(--plum);
+    }
+
+    .primary-button:hover { background: var(--crimson); }
+
+    .secondary-button {
+      color: var(--plum);
+      background: white;
+      border-color: #D9C2D2;
+    }
+
+    .secondary-button:hover { background: #FBF3F8; }
+
+    .full-button { width: 100%; }
+
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
     }
 
     #results { display: none; }
 
-    .score-panel {
-      background: #f1eaff;
-      border-radius: 12px;
-      padding: 18px;
-      margin: 16px 0;
+    .results-header {
+      border-radius: 10px;
+      padding: 25px;
+      border: 1px solid var(--line);
+      margin-bottom: 20px;
     }
 
-    .score {
-      font-size: 28px;
-      font-weight: 700;
+    .results-header.green {
+      background: var(--green-bg);
+      border-color: #B8DDC7;
     }
 
-    .finding {
-      border-left: 4px solid var(--purple);
-      background: #faf8fd;
-      padding: 12px 14px;
-      margin: 12px 0;
-      border-radius: 0 8px 8px 0;
+    .results-header.amber {
+      background: var(--amber-bg);
+      border-color: #F0D28E;
     }
 
-    .finding h3 { margin: 0 0 5px; font-size: 16px; }
-
-    .warning {
-      background: #fff7e8;
-      border: 1px solid #f1d7a6;
-      padding: 14px;
-      border-radius: 9px;
-      margin-top: 16px;
+    .results-header.red {
+      background: var(--red-bg);
+      border-color: #EDBCC2;
     }
 
-    .actions { margin-top: 18px; }
+    .results-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
 
-    footer {
-      text-align: center;
-      padding: 20px;
+    .green .results-label, .green .big-score { color: var(--green); }
+    .amber .results-label, .amber .big-score { color: var(--amber); }
+    .red .results-label, .red .big-score { color: var(--red); }
+
+    .score-line {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 5px 0;
+    }
+
+    .big-score {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 49px;
+      line-height: 1.2;
+    }
+
+    .score-out-of {
       color: var(--muted);
+      font-size: 14px;
+    }
+
+    .band-title {
+      font-size: 17px;
+      font-weight: 750;
+      margin: 8px 0 4px;
+    }
+
+    .band-description {
+      margin: 0;
+      font-size: 13px;
+      color: #51434D;
+    }
+
+    .score-bar {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 4px;
+      margin-top: 19px;
+    }
+
+    .score-cell {
+      height: 7px;
+      border-radius: 2px;
+      background: rgba(69, 6, 46, .12);
+    }
+
+    .score-cell.filled.green { background: var(--green); }
+    .score-cell.filled.amber { background: #D99A19; }
+    .score-cell.filled.red { background: var(--red); }
+
+    .score-scale {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 6px;
+    }
+
+    .result-block {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 24px;
+      margin: 18px 0;
+    }
+
+    .result-block h3 {
+      margin: 0 0 6px;
+      font-size: 17px;
+      color: var(--crimson);
+    }
+
+    .result-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin: 0 0 18px;
+    }
+
+    .breakdown-row {
+      border-top: 1px solid var(--line);
+      padding: 16px 0;
+    }
+
+    .breakdown-row:first-of-type { border-top: 0; }
+
+    .breakdown-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .breakdown-title {
+      font-weight: 750;
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .points {
+      flex: 0 0 auto;
+      border-radius: 5px;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .points.green { color: var(--green); background: var(--green-bg); }
+    .points.amber { color: var(--amber); background: var(--amber-bg); }
+    .points.red { color: var(--red); background: var(--red-bg); }
+
+    .status-line {
+      color: var(--muted);
+      font-size: 12px;
+      margin: 5px 0;
+    }
+
+    .reason {
+      margin: 7px 0 0;
       font-size: 13px;
     }
 
-    @media (max-width: 500px) {
-      header h1 { font-size: 25px; }
-      section { padding: 16px; }
-      .secondary { margin: 8px 0 0; }
+    .action-line {
+      margin: 9px 0 0;
+      padding: 10px 12px;
+      background: #FBF6FA;
+      border-left: 3px solid var(--blush);
+      font-size: 12px;
+    }
+
+    .action-line strong { color: var(--crimson); }
+
+    .flag {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      margin: 10px 0;
+    }
+
+    .flag-title {
+      font-weight: 750;
+      font-size: 13px;
+      margin: 0 0 3px;
+    }
+
+    .flag p {
+      margin: 0;
+      font-size: 12px;
+      color: #5D4C57;
+    }
+
+    .flag.caution {
+      background: #FFF8EA;
+      border-color: #F0D9A6;
+    }
+
+    .flag.info { background: #FCF5FA; }
+
+    .method-note {
+      background: #F9F5F8;
+      padding: 17px;
+      border-radius: 7px;
+      font-size: 12px;
+      color: #5D4C57;
+    }
+
+    .method-note h4 {
+      color: var(--crimson);
+      font-size: 13px;
+      margin: 0 0 8px;
+    }
+
+    .method-note ul { margin: 7px 0 0; padding-left: 20px; }
+    .method-note li { margin: 4px 0; }
+
+    .report-meta {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 14px;
+    }
+
+    .footer {
+      background: var(--crimson);
+      color: #F7EAF2;
+      padding: 24px 28px;
+      font-size: 12px;
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer strong { color: white; }
+
+    @media (max-width: 850px) {
+      .layout { grid-template-columns: 1fr; }
+      .side-card { position: static; grid-row: 1; }
+      .side-legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .side-legend .legend-row { margin: 4px 0; }
+    }
+
+    @media (max-width: 520px) {
+      .topbar-inner, .hero-inner { padding-left: 18px; padding-right: 18px; }
+      main { padding: 22px 14px 45px; }
+      .section-card { padding: 19px; }
+      .side-card { padding: 17px; }
+      .hero-inner { padding-top: 38px; padding-bottom: 34px; }
+      .edition { display: none; }
+      .side-legend { grid-template-columns: 1fr; }
+      .form-actions > button { width: 100%; }
+      .result-block { padding: 17px; }
     }
 
     @media print {
-      body { background: white; }
-      header { background: white; color: black; padding: 10px 0; }
-      header p { color: black; }
-      main { padding: 0; }
-      #assessment, .actions, footer { display: none !important; }
+      body { background: white; font-size: 12px; }
+      .topbar { background: white; color: var(--crimson); border-bottom: 2px solid var(--crimson); }
+      .topbar-inner { padding: 10px 0; }
+      .hero { background: white; }
+      .hero-inner { padding: 18px 0; }
+      h1 { font-size: 30px; }
+      main { padding: 15px 0; }
+      #assessment, .side-card, .notice, .footer, .screen-only { display: none !important; }
       #results { display: block !important; }
-      section { break-inside: avoid; }
+      .results-header, .result-block, .method-note, .flag, .action-line {
+        break-inside: avoid;
+        box-shadow: none;
+      }
+      .result-block { padding: 14px; margin: 10px 0; }
+      .breakdown-row { padding: 9px 0; }
+      .results-header { padding: 15px; }
+      * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div>
-      <h1>AI Security Risk Check</h1>
-      <p>A practical first check for businesses using AI.</p>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">AI Security Risk Check</div>
+      <div class="edition">EARLY PRODUCT PROTOTYPE · VERSION 0.2</div>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">AI risk · Security · Accountability</div>
+      <h1>Understand your AI risks before they become business problems.</h1>
+      <p class="hero-copy">
+        A structured first check for teams using AI. Identify control gaps,
+        understand the reasoning behind your score, and see which actions
+        deserve attention first.
+      </p>
+      <div class="hero-meta">
+        <span>Six control areas</span>
+        <span>Transparent scoring</span>
+        <span>Action-oriented findings</span>
+      </div>
     </div>
   </header>
 
   <main>
-    <section>
-      <h2>Before you begin</h2>
-      <p class="intro">
-        Answer using what you know today. Mark controls as unverified when
-        you cannot confirm them. This tool helps identify questions to
-        investigate; it does not certify that an AI system is safe.
-      </p>
-      <p class="note">
-        Demo version: your answers are processed in this browser and are
-        not sent to a server by this page. Avoid entering real customer
-        names, confidential information, or sensitive business details.
-      </p>
-    </section>
+    <div class="notice">
+      <strong>Before you begin:</strong> Use evidence, not assumptions, when
+      answering. This prototype calculates a preliminary score from your
+      responses. It is not a certification, compliance decision, or guarantee
+      that an AI system is safe. Use fictional information for testing.
+    </div>
 
-    <form id="assessment">
-      <section>
-        <h2>1. About the AI use case</h2>
+    <div class="layout">
+      <form id="assessment">
+        <section class="section-card">
+          <div class="section-heading">
+            <div class="section-number">01</div>
+            <div>
+              <h2>Business context</h2>
+              <p class="section-description">
+                Define the AI use case so the findings have business context.
+              </p>
+            </div>
+          </div>
 
-        <div class="field">
-          <label for="purpose">What is the main business purpose?</label>
-          <input id="purpose" placeholder="Example: customer support" required>
+          <div class="field">
+            <label for="purpose">What is the main business purpose?</label>
+            <input id="purpose" required maxlength="200"
+              placeholder="e.g. Customer support">
+          </div>
+
+          <div class="field">
+            <label for="owner">Who is responsible for this AI workflow?</label>
+            <input id="owner" required maxlength="200"
+              placeholder="e.g. Operations manager">
+          </div>
+
+          <div class="field">
+            <label for="data">What type of information does it process?</label>
+            <textarea id="data" required maxlength="1000"
+              placeholder="Describe the categories of information. Do not enter real personal or confidential data."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="sensitive">Does it process personal, confidential, financial, health, or proprietary information?</label>
+            <select id="sensitive" required>
+              <option value="unknown">Not verified</option>
+              <option value="yes">Yes</option>
+              <option value="no">No, this has been checked</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="integrations">Can it access files, databases, email, tools, or external services?</label>
+            <select id="integrations" required>
+              <option value="unknown">Not verified</option>
+              <option value="yes">Yes</option>
+              <option value="no">No, this has been checked</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="thirdparty">Does it depend on a third-party model, API, plugin, or dataset?</label>
+            <select id="thirdparty" required>
+              <option value="unknown">Not verified</option>
+              <option value="yes">Yes</option>
+              <option value="no">No, this has been checked</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="section-card">
+          <div class="section-heading">
+            <div class="section-number">02</div>
+            <div>
+              <h2>Security controls</h2>
+              <p class="section-description">
+                Score each control based on what can currently be demonstrated.
+                All six answers are required.
+              </p>
+            </div>
+          </div>
+          <div id="controls"></div>
+        </section>
+
+        <section class="section-card">
+          <div class="section-heading">
+            <div class="section-number">03</div>
+            <div>
+              <h2>Generate your findings</h2>
+              <p class="section-description">
+                Your report will explain the score, show each control's
+                contribution, and suggest practical next steps.
+              </p>
+            </div>
+          </div>
+          <button class="primary-button full-button" type="submit">
+            Calculate score and view report
+          </button>
+        </section>
+      </form>
+
+      <aside class="side-card">
+        <h3>Assessment progress</h3>
+        <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+        <div class="progress-text" id="progressText">0 of 6 controls assessed</div>
+
+        <hr class="side-divider">
+
+        <h3>How to read the result</h3>
+        <div class="side-legend">
+          <div class="legend-row">
+            <span class="dot dot-green"></span>
+            <span><strong>0 points</strong><br>Established with evidence</span>
+          </div>
+          <div class="legend-row">
+            <span class="dot dot-amber"></span>
+            <span><strong>1 point</strong><br>Partial or unverified</span>
+          </div>
+          <div class="legend-row">
+            <span class="dot dot-red"></span>
+            <span><strong>2 points</strong><br>Absent or ineffective</span>
+          </div>
         </div>
 
-        <div class="field">
-          <label for="owner">Who is responsible for the AI workflow?</label>
-          <input id="owner" placeholder="Example: operations manager" required>
-        </div>
+        <hr class="side-divider">
 
-        <div class="field">
-          <label for="data">What type of information does it process?</label>
-          <textarea id="data" placeholder="Example: customer questions and order details" required></textarea>
-        </div>
-
-        <div class="field">
-          <label for="sensitive">Does it process personal, confidential, financial, health, or proprietary information?</label>
-          <select id="sensitive">
-            <option value="unknown">Not sure</option>
-            <option value="yes">Yes</option>
-            <option value="no">No, based on what we know</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="integrations">Can it access files, databases, email, tools, or external services?</label>
-          <select id="integrations">
-            <option value="unknown">Not sure</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="thirdparty">Does it depend on a third-party model, API, plugin, or dataset?</label>
-          <select id="thirdparty">
-            <option value="unknown">Not sure</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </div>
-      </section>
-
-      <section>
-        <h2>2. Check the security controls</h2>
-        <p class="intro">
-          Select the answer that best reflects the current evidence, not
-          what you hope is in place.
+        <h3>Scoring bands</h3>
+        <p class="side-note">
+          <strong>0–3:</strong> Green · Fewer reported control gaps
         </p>
-        <div id="questions"></div>
-      </section>
-
-      <section>
-        <h2>3. Review and calculate</h2>
-        <p class="intro">
-          Check your answers before generating the result. The score covers
-          six control areas, with each area scored from 0 to 2.
+        <p class="side-note">
+          <strong>4–7:</strong> Amber · Review gaps and uncertainties
         </p>
-        <button type="submit">Generate risk summary</button>
-      </section>
-    </form>
+        <p class="side-note">
+          <strong>8–12:</strong> Red · Prioritise a closer review
+        </p>
+
+        <hr class="side-divider">
+        <p class="side-note">
+          The bands are provisional. A low score does not rule out a serious
+          risk, and the same score can arise from different control gaps.
+        </p>
+      </aside>
+    </div>
 
     <section id="results" aria-live="polite">
-      <h2>Your preliminary assessment</h2>
-      <div id="summary"></div>
-      <div id="findings"></div>
-      <div class="warning">
-        <strong>Important limitation</strong>
-        <p>
-          This result is a prioritisation aid based on the answers provided.
-          It is not a validated security rating, legal opinion, compliance
-          decision, or guarantee of safety. A qualified reviewer should
-          verify important findings before decisions are made.
+      <div class="results-header" id="resultsHeader">
+        <div class="results-label" id="resultLabel">PRELIMINARY RESULT</div>
+        <div class="score-line">
+          <span class="big-score" id="bigScore">0</span>
+          <span class="score-out-of">out of 12 possible points</span>
+        </div>
+        <div class="band-title" id="bandTitle"></div>
+        <p class="band-description" id="bandDescription"></p>
+        <div class="score-bar" id="scoreBar"></div>
+        <div class="score-scale">
+          <span>0 · Fewer reported gaps</span>
+          <span>12 · More reported gaps</span>
+        </div>
+      </div>
+
+      <div class="result-block">
+        <h3>Assessment overview</h3>
+        <p class="result-subtitle">
+          The use case and contextual flags are shown separately from the
+          numerical control-gap score.
         </p>
+        <div id="overview"></div>
       </div>
-      <div class="actions">
-        <button type="button" onclick="window.print()">Print or save as PDF</button>
-        <button type="button" class="secondary" onclick="resetAssessment()">Start again</button>
+
+      <div class="result-block">
+        <h3>How your score was calculated</h3>
+        <p class="result-subtitle">
+          Each control contributes 0, 1, or 2 points. The total is the sum
+          of all six control scores. Select the explanation shown for each
+          control to understand the result.
+        </p>
+        <div id="breakdown"></div>
       </div>
+
+      <div class="result-block">
+        <h3>Contextual risk flags</h3>
+        <p class="result-subtitle">
+          These conditions can change the risk profile. They are not added
+          to the 12-point score.
+        </p>
+        <div id="flags"></div>
+      </div>
+
+      <div class="result-block">
+        <h3>Recommended action plan</h3>
+        <p class="result-subtitle">
+          Start with absent controls, then verify uncertain controls and
+          document the evidence.
+        </p>
+        <div id="actionPlan"></div>
+      </div>
+
+      <div class="result-block">
+        <h3>Scoring methodology and limitations</h3>
+        <div class="method-note">
+          <h4>Calculation</h4>
+          <p>
+            The overall score is the sum of six control scores. Each control
+            receives 0, 1, or 2 points, for a maximum of 12.
+          </p>
+          <ul>
+            <li><strong>0:</strong> Established and supported by evidence.</li>
+            <li><strong>1:</strong> Partially addressed or unverified.</li>
+            <li><strong>2:</strong> Absent or ineffective.</li>
+          </ul>
+          <p>
+            Partial and unverified controls share one point in this prototype,
+            but the report labels them differently. An unverified control
+            must be investigated before anyone concludes it is effective
+            or absent.
+          </p>
+          <p>
+            The score is a prioritisation aid, not a validated security
+            rating. It does not measure every possible AI risk, and it does
+            not replace a detailed assessment, expert review, legal advice,
+            or applicable compliance obligations.
+          </p>
+        </div>
+      </div>
+
+      <div class="form-actions screen-only">
+        <button type="button" class="primary-button" onclick="window.print()">
+          Print / save report as PDF
+        </button>
+        <button type="button" class="secondary-button" id="downloadReport">
+          Download report data
+        </button>
+        <button type="button" class="secondary-button" id="startAgain">
+          Start a new assessment
+        </button>
+      </div>
+      <p class="report-meta" id="reportMeta"></p>
     </section>
   </main>
 
-  <footer>AI Security Risk Check · Early prototype · Version 0.1</footer>
+  <footer class="footer">
+    <div class="footer-inner">
+      <span><strong>AI Security Risk Check</strong> · Early prototype</span>
+      <span>Designed to make control gaps easier to understand and act on.</span>
+    </div>
+  </footer>
 
   <script>
     const controls = [
       {
         id: "ownership",
-        title: "1. Ownership and accountability",
-        question: "Is there a named owner who is responsible for this AI system and its risks?",
-        action: "Confirm the accountable owner, their responsibilities, and who must be contacted when something goes wrong."
+        title: "Ownership and accountability",
+        question: "Is there a named owner responsible for this AI system, its risks, and decisions about its use?",
+        evidence: "Evidence examples: a named owner, documented responsibilities, an escalation contact, and an approved use-case description.",
+        action: "Name the accountable owner. Document responsibilities, approval authority, and who must be contacted when something goes wrong."
       },
       {
-        id: "datahandling",
-        title: "2. Data protection",
-        question: "Have data handling rules been checked, including what information is sent to the AI provider and how it is retained?",
-        action: "Map the information being processed. Verify provider retention and data-use terms, and establish appropriate data protection measures."
+        id: "data",
+        title: "Data protection",
+        question: "Have data handling rules been checked, including what is sent to the AI provider and how it is stored or retained?",
+        evidence: "Evidence examples: a data-flow record, data classification, provider retention terms, approved use rules, and applicable privacy requirements.",
+        action: "Map the information being processed. Verify provider data-use and retention terms, and apply appropriate data protection measures."
       },
       {
         id: "access",
-        title: "3. Access and integrations",
+        title: "Access and integrations",
         question: "Are user permissions and connected tools restricted to the access each user and workflow actually needs?",
-        action: "Review users, permissions, connected services, and credentials. Apply least privilege and remove unnecessary access."
+        evidence: "Evidence examples: a current user list, role permissions, integration inventory, access reviews, and least-privilege settings.",
+        action: "Review users, permissions, connected services, and credentials. Remove unnecessary access and apply least privilege."
       },
       {
         id: "oversight",
-        title: "4. Human oversight and impact",
-        question: "Are important outputs reviewed by a person, and have the consequences of wrong or manipulated outputs been assessed?",
+        title: "Human oversight and impact",
+        question: "Are important outputs reviewed by a person, and have the consequences of incorrect or manipulated outputs been assessed?",
+        evidence: "Evidence examples: documented review requirements, named reviewers, escalation rules, and a record of potential harms.",
         action: "Define which outputs need human approval, who reviews them, when to escalate, and what harm could result from errors or manipulation."
       },
       {
-        id: "thirdpartycontrol",
-        title: "5. Third-party dependencies",
-        question: "Have the AI provider, model, plugin, or dataset been reviewed for relevant security, privacy, reliability, and dependency risks?",
-        action: "Document the provider and model. Review relevant security and privacy terms, known limitations, update practices, and fallback options."
+        id: "thirdparty",
+        title: "Third-party dependencies",
+        question: "Have the AI provider, model, plugin, and relevant datasets been reviewed for security, privacy, reliability, and dependency risks?",
+        evidence: "Evidence examples: provider and model details, security and privacy terms, known limitations, update practices, and fallback plans.",
+        action: "Document the provider and model. Review relevant security and privacy terms, known limitations, updates, and fallback options."
       },
       {
         id: "monitoring",
-        title: "6. Monitoring and response",
+        title: "Monitoring and response",
         question: "Is there a way to detect misuse or unexpected behaviour and respond to an incident?",
-        action: "Define what should be logged, who checks for unusual activity, how incidents are reported, and how access can be stopped if needed."
+        evidence: "Evidence examples: appropriate logs, a monitoring owner, alert criteria, an incident contact, and a tested response procedure.",
+        action: "Define what should be logged, who checks unusual activity, how incidents are reported, and how access can be stopped if needed."
       }
     ];
 
-    const answers = [
-      { value: "established", label: "Established and supported by evidence", score: 0 },
-      { value: "partial", label: "Partially addressed", score: 1 },
-      { value: "absent", label: "Absent or ineffective", score: 2 },
-      { value: "unverified", label: "Unverified / I don't know", score: 1 }
+    const choices = [
+      {
+        value: "established",
+        label: "Established and supported by evidence",
+        score: 0
+      },
+      {
+        value: "partial",
+        label: "Partially implemented",
+        score: 1
+      },
+      {
+        value: "absent",
+        label: "Absent or ineffective",
+        score: 2
+      },
+      {
+        value: "unverified",
+        label: "Unverified / I don't know",
+        score: 1
+      }
     ];
 
-    const questionContainer = document.getElementById("questions");
+    const controlRoot = document.getElementById("controls");
 
-    controls.forEach(control => {
+    controls.forEach((control, index) => {
       const wrapper = document.createElement("div");
-      wrapper.className = "question";
+      wrapper.className = "control";
 
-      const label = document.createElement("label");
-      label.className = "question-title";
-      label.htmlFor = control.id;
-      label.textContent = control.title;
+      const number = document.createElement("div");
+      number.className = "control-index";
+      number.textContent = "CONTROL " + String(index + 1).padStart(2, "0");
 
-      const prompt = document.createElement("p");
-      prompt.textContent = control.question;
+      const title = document.createElement("label");
+      title.className = "question-title";
+      title.htmlFor = control.id;
+      title.textContent = control.title;
+
+      const question = document.createElement("p");
+      question.className = "control-question";
+      question.textContent = control.question;
+
+      const evidence = document.createElement("p");
+      evidence.className = "control-explainer";
+      evidence.textContent = control.evidence;
 
       const select = document.createElement("select");
       select.id = control.id;
@@ -345,139 +1009,301 @@
 
       const placeholder = document.createElement("option");
       placeholder.value = "";
-      placeholder.textContent = "Choose an answer";
-      placeholder.selected = true;
+      placeholder.textContent = "Select the current control status";
       placeholder.disabled = true;
+      placeholder.selected = true;
       select.appendChild(placeholder);
 
-      answers.forEach(answer => {
+      choices.forEach(choice => {
         const option = document.createElement("option");
-        option.value = answer.value;
-        option.textContent = answer.label;
+        option.value = choice.value;
+        option.textContent = choice.label;
         select.appendChild(option);
       });
 
-      wrapper.append(label, prompt, select);
-      questionContainer.appendChild(wrapper);
+      select.addEventListener("change", updateProgress);
+
+      wrapper.append(number, title, question, evidence, select);
+      controlRoot.appendChild(wrapper);
     });
+
+    function updateProgress() {
+      const completed = controls.filter(control =>
+        document.getElementById(control.id).value !== ""
+      ).length;
+      document.getElementById("progress").style.width =
+        (completed / controls.length * 100) + "%";
+      document.getElementById("progressText").textContent =
+        completed + " of " + controls.length + " controls assessed";
+    }
+
+    function getBand(score) {
+      if (score <= 3) {
+        return {
+          name: "Fewer reported control gaps",
+          label: "GREEN · LOWER REPORTED GAPS",
+          colour: "green",
+          description: "The answers report fewer control gaps. This is not proof that the AI system is safe. Verify evidence and investigate any critical unknowns."
+        };
+      }
+      if (score <= 7) {
+        return {
+          name: "Review gaps and uncertainties",
+          label: "AMBER · REVIEW NEEDED",
+          colour: "amber",
+          description: "The answers indicate controls that may need improvement or verification. Prioritise actions based on potential impact, not the score alone."
+        };
+      }
+      return {
+        name: "Prioritise a closer review",
+        label: "RED · HIGH INITIAL CONCERN",
+        colour: "red",
+        description: "The answers indicate a higher number of reported control gaps. Arrange a closer review and address important missing controls promptly."
+      };
+    }
+
+    function selectedChoice(control) {
+      const value = document.getElementById(control.id).value;
+      return choices.find(choice => choice.value === value);
+    }
+
+    function createTextElement(tag, className, text) {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      element.textContent = text;
+      return element;
+    }
+
+    function appendOverviewLine(container, label, value) {
+      const p = document.createElement("p");
+      const strong = document.createElement("strong");
+      strong.textContent = label + ": ";
+      p.append(strong, document.createTextNode(value));
+      container.appendChild(p);
+    }
 
     document.getElementById("assessment").addEventListener("submit", function(event) {
       event.preventDefault();
 
       let total = 0;
-      let unverifiedCount = 0;
-      let absentCount = 0;
-      const results = [];
-
-      controls.forEach(control => {
-        const selected = document.getElementById(control.id).value;
-        const answer = answers.find(item => item.value === selected);
-
-        total += answer.score;
-
-        if (selected === "unverified") unverifiedCount++;
-        if (selected === "absent") absentCount++;
-
-        results.push({
-          title: control.title,
-          status: answer.label,
-          value: selected,
-          action: control.action
-        });
+      const results = controls.map(control => {
+        const choice = selectedChoice(control);
+        total += choice.score;
+        return {
+          ...control,
+          value: choice.value,
+          label: choice.label,
+          score: choice.score
+        };
       });
 
-      let band;
-      if (total <= 3) {
-        band = "Lower number of reported control gaps";
-      } else if (total <= 7) {
-        band = "Several control gaps or uncertainties";
-      } else {
-        band = "High initial concern: prioritise review";
+      const band = getBand(total);
+      const resultsSection = document.getElementById("results");
+      const header = document.getElementById("resultsHeader");
+      header.className = "results-header " + band.colour;
+      document.getElementById("resultLabel").textContent = band.label;
+      document.getElementById("bigScore").textContent = total;
+      document.getElementById("bandTitle").textContent = band.name;
+      document.getElementById("bandDescription").textContent = band.description;
+
+      const scoreBar = document.getElementById("scoreBar");
+      scoreBar.replaceChildren();
+      for (let i = 0; i < 12; i++) {
+        const cell = document.createElement("div");
+        cell.className = "score-cell" + (i < total ? " filled " + band.colour : "");
+        scoreBar.appendChild(cell);
       }
 
-      document.getElementById("summary").innerHTML = `
-        <div class="score-panel">
-          <div class="score">${total} / 12</div>
-          <strong>${band}</strong>
-          <p>Reported absent controls: ${absentCount}. Unverified controls: ${unverifiedCount}.</p>
-          <p class="note">These bands are provisional and have not been validated against real-world cases.</p>
-        </div>
-        <p><strong>Business purpose:</strong> ${escapeText(document.getElementById("purpose").value)}</p>
-        <p><strong>Responsible owner:</strong> ${escapeText(document.getElementById("owner").value)}</p>
-        <p><strong>Information processed:</strong> ${escapeText(document.getElementById("data").value)}</p>
-        <p><strong>Sensitive information:</strong> ${contextLabel("sensitive")}</p>
-        <p><strong>External integrations:</strong> ${contextLabel("integrations")}</p>
-        <p><strong>Third-party dependency:</strong> ${contextLabel("thirdparty")}</p>
-      `;
+      const overview = document.getElementById("overview");
+      overview.replaceChildren();
+      appendOverviewLine(overview, "Business purpose", document.getElementById("purpose").value);
+      appendOverviewLine(overview, "Responsible owner", document.getElementById("owner").value);
+      appendOverviewLine(overview, "Information processed", document.getElementById("data").value);
+      appendOverviewLine(overview, "Sensitive information", getContextLabel("sensitive"));
+      appendOverviewLine(overview, "External integrations", getContextLabel("integrations"));
+      appendOverviewLine(overview, "Third-party dependency", getContextLabel("thirdparty"));
 
-      const findings = document.getElementById("findings");
-      findings.replaceChildren();
-
-      const heading = document.createElement("h3");
-      heading.textContent = "Control findings and suggested actions";
-      findings.appendChild(heading);
+      const breakdown = document.getElementById("breakdown");
+      breakdown.replaceChildren();
 
       results.forEach(result => {
-        const card = document.createElement("div");
-        card.className = "finding";
+        const row = document.createElement("div");
+        row.className = "breakdown-row";
 
-        const title = document.createElement("h3");
-        title.textContent = result.title;
+        const top = document.createElement("div");
+        top.className = "breakdown-top";
 
-        const status = document.createElement("p");
-        status.textContent = "Status: " + result.status;
+        const title = createTextElement("div", "breakdown-title", result.title);
+        const scoreColour = result.score === 0 ? "green" : result.score === 1 ? "amber" : "red";
+        const points = createTextElement("span", "points " + scoreColour, result.score + " / 2 points");
+        top.append(title, points);
+
+        const status = createTextElement("p", "status-line", "Selected status: " + result.label);
+        const reason = createTextElement("p", "reason", getReason(result.value));
 
         const action = document.createElement("p");
-        action.textContent = "Suggested next step: " + result.action;
+        action.className = "action-line";
+        const actionLabel = document.createElement("strong");
+        actionLabel.textContent = "Recommended next step: ";
+        action.append(actionLabel, document.createTextNode(result.action));
 
-        card.append(title, status, action);
-        findings.appendChild(card);
+        row.append(top, status, reason, action);
+        breakdown.appendChild(row);
       });
 
-      const contextWarnings = [];
-      if (document.getElementById("sensitive").value !== "no") {
-        contextWarnings.push("Verify data protection requirements because sensitive information may be involved.");
-      }
-      if (document.getElementById("integrations").value !== "no") {
-        contextWarnings.push("Review permissions and the potential impact of connected tools or services.");
-      }
-      if (document.getElementById("thirdparty").value !== "no") {
-        contextWarnings.push("Check third-party provider and dependency risks.");
+      const flags = document.getElementById("flags");
+      flags.replaceChildren();
+      const contextFlags = [
+        {
+          id: "sensitive",
+          yesTitle: "Sensitive or confidential information may be involved",
+          yesText: "Verify data flows, permitted uses, access restrictions, retention, and applicable privacy obligations.",
+          unknownTitle: "Data sensitivity is unverified",
+          unknownText: "Identify the categories of data processed before deciding which protections are needed."
+        },
+        {
+          id: "integrations",
+          yesTitle: "Connected tools or external access",
+          yesText: "Review the permissions and potential consequences of connected files, tools, databases, email, and services.",
+          unknownTitle: "External access is unverified",
+          unknownText: "Confirm whether the AI workflow can access connected systems or take actions outside the AI interface."
+        },
+        {
+          id: "thirdparty",
+          yesTitle: "Third-party AI dependency",
+          yesText: "Review provider terms, security responsibilities, data handling, service changes, and fallback arrangements.",
+          unknownTitle: "Third-party dependency is unverified",
+          unknownText: "Identify the models, APIs, plugins, and datasets the workflow depends on."
+        }
+      ];
+
+      let flagCount = 0;
+      contextFlags.forEach(flag => {
+        const value = document.getElementById(flag.id).value;
+        if (value === "no") return;
+
+        const box = document.createElement("div");
+        box.className = "flag " + (value === "yes" ? "caution" : "info");
+        const title = createTextElement("div", "flag-title",
+          value === "yes" ? flag.yesTitle : flag.unknownTitle);
+        const description = createTextElement("p", "", 
+          value === "yes" ? flag.yesText : flag.unknownText);
+        box.append(title, description);
+        flags.appendChild(box);
+        flagCount++;
+      });
+
+      if (flagCount === 0) {
+        flags.appendChild(createTextElement("p", "side-note",
+          "No contextual flags were selected in this form. This does not mean there are no other risks."));
       }
 
-      if (contextWarnings.length) {
-        const contextHeading = document.createElement("h3");
-        contextHeading.textContent = "Contextual risk flags";
-        findings.appendChild(contextHeading);
+      const plan = document.getElementById("actionPlan");
+      plan.replaceChildren();
 
-        contextWarnings.forEach(text => {
-          const item = document.createElement("div");
-          item.className = "finding";
-          item.textContent = text;
-          findings.appendChild(item);
-        });
+      const priorityResults = results.slice().sort((a, b) => {
+        const rank = value => value === "absent" ? 0 : value === "unverified" ? 1 : value === "partial" ? 2 : 3;
+        return rank(a.value) - rank(b.value);
+      });
+
+      priorityResults.forEach(result => {
+        if (result.value === "established") return;
+        const box = document.createElement("div");
+        box.className = "flag " + (result.value === "absent" ? "caution" : "info");
+        const title = createTextElement("div", "flag-title",
+          result.title + (result.value === "absent" ? " · Address" : " · Verify or improve"));
+        const description = createTextElement("p", "", result.action);
+        box.append(title, description);
+        plan.appendChild(box);
+      });
+
+      if (!priorityResults.some(result => result.value !== "established")) {
+        plan.appendChild(createTextElement("p", "side-note",
+          "All six controls were marked established. Verify that supporting evidence is current and review whether the contextual flags reveal additional work."));
       }
 
-      document.getElementById("results").style.display = "block";
-      document.getElementById("results").scrollIntoView({ behavior: "smooth" });
+      const now = new Date();
+      document.getElementById("reportMeta").textContent =
+        "Generated " + now.toLocaleDateString(undefined, {
+          year: "numeric", month: "long", day: "numeric"
+        }) + ". Preliminary assessment based on user-provided answers.";
+
+      resultsSection.style.display = "block";
+      resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      window.latestAssessment = {
+        product: "AI Security Risk Check",
+        version: "0.2",
+        generatedAt: now.toISOString(),
+        purpose: document.getElementById("purpose").value,
+        owner: document.getElementById("owner").value,
+        dataTypes: document.getElementById("data").value,
+        contextualAnswers: {
+          sensitiveInformation: document.getElementById("sensitive").value,
+          externalIntegrations: document.getElementById("integrations").value,
+          thirdPartyDependency: document.getElementById("thirdparty").value
+        },
+        controlResults: results.map(result => ({
+          control: result.title,
+          selectedStatus: result.value,
+          points: result.score,
+          reason: getReason(result.value),
+          recommendedAction: result.action
+        })),
+        totalScore: total,
+        maximumScore: 12,
+        band: band.name,
+        contextualFlags: contextFlags
+          .filter(flag => document.getElementById(flag.id).value !== "no")
+          .map(flag => ({
+            category: flag.id,
+            status: document.getElementById(flag.id).value
+          })),
+        limitation: "Preliminary prioritisation aid; not a validated security rating or compliance decision."
+      };
     });
 
-    function contextLabel(id) {
+    function getReason(value) {
+      if (value === "established") {
+        return "This answer contributes 0 points because the control is reported as established and supported by evidence. The evidence should still be checked.";
+      }
+      if (value === "partial") {
+        return "This answer contributes 1 point because the control is only partly implemented. Identify what is missing and complete the control.";
+      }
+      if (value === "absent") {
+        return "This answer contributes 2 points because the control is reported as absent or ineffective. Treat this as a control gap requiring attention.";
+      }
+      return "This answer contributes 1 provisional point because the control has not been verified. This is uncertainty, not proof that the control has failed. Confirm its status and update the assessment.";
+    }
+
+    function getContextLabel(id) {
       const select = document.getElementById(id);
       return select.options[select.selectedIndex].text;
     }
 
-    function escapeText(value) {
-      const element = document.createElement("span");
-      element.textContent = value;
-      return element.innerHTML;
-    }
+    document.getElementById("downloadReport").addEventListener("click", function() {
+      if (!window.latestAssessment) return;
 
-    function resetAssessment() {
+      const content = JSON.stringify(window.latestAssessment, null, 2);
+      const blob = new Blob([content], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "ai-security-risk-assessment.json";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("startAgain").addEventListener("click", function() {
       document.getElementById("assessment").reset();
       document.getElementById("results").style.display = "none";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+      updateProgress();
+      document.getElementById("assessment").scrollIntoView({ behavior: "smooth" });
+    });
+
+    updateProgress();
   </script>
 </body>
 </html>
